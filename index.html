@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
- 
+
   :root {
     --navy: #0f1923;
     --navy2: #1a2a3a;
@@ -23,9 +23,9 @@
     --red: #e74c3c;
     --radius: 12px;
   }
- 
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--navy);
@@ -33,7 +33,7 @@
     min-height: 100vh;
     padding-bottom: 100px;
   }
- 
+
   /* HEADER */
   header {
     background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
@@ -62,7 +62,7 @@
     padding: 5px 12px;
     border-radius: 20px;
   }
- 
+
   /* SECTIONS */
   .section {
     margin: 16px 16px 0;
@@ -80,7 +80,7 @@
     padding: 12px 16px 8px;
     border-bottom: 1px solid rgba(255,255,255,0.05);
   }
- 
+
   /* FORM FIELDS */
   .field-row {
     display: grid;
@@ -119,7 +119,7 @@
     border-color: var(--accent);
   }
   .field select option { background: var(--navy2); }
- 
+
   /* NOTE */
   .note-box {
     margin: 12px 16px 0;
@@ -132,7 +132,7 @@
     line-height: 1.5;
   }
   .note-box span { font-weight: 600; }
- 
+
   /* BALE TABLE */
   .bale-list {
     padding: 0;
@@ -210,7 +210,7 @@
     transition: color 0.2s;
   }
   .bale-del:hover { color: var(--red); }
- 
+
   /* TOTAL ROW */
   .total-row {
     display: flex;
@@ -234,7 +234,7 @@
     color: var(--white);
   }
   .total-value span { font-size: 12px; color: var(--muted); margin-left: 4px; }
- 
+
   /* PHOTOS */
   .photo-grid {
     display: grid;
@@ -294,7 +294,7 @@
   }
   .photo-btn:hover { border-color: var(--accent); color: var(--accent); }
   .photo-btn .icon { font-size: 22px; }
- 
+
   /* EXPORT BUTTON */
   .export-bar {
     position: fixed;
@@ -336,10 +336,10 @@
     transition: transform 0.15s;
   }
   .btn-wsp:active { transform: scale(0.97); }
- 
+
   /* HIDDEN FILE INPUTS */
   input[type="file"] { display: none; }
- 
+
   /* RESET BTN */
   .btn-reset {
     display: block;
@@ -359,12 +359,12 @@
 </style>
 </head>
 <body>
- 
+
 <header>
   <h1>Bale Dispatch</h1>
   <div class="total-badge" id="headerBaleCount">0 bales</div>
 </header>
- 
+
 <!-- INFO SECTION -->
 <div class="section">
   <div class="section-label">Dispatch Info</div>
@@ -387,12 +387,12 @@
     </div>
   </div>
 </div>
- 
+
 <!-- NOTE -->
 <div class="note-box">
   <span>Note:</span> Each bale was individually weighed using the on-site scale. Weights are approximate and may not be exact.
 </div>
- 
+
 <!-- BALE TABLE -->
 <div class="section" style="margin-top:16px;">
   <div class="section-label">Bale Weights</div>
@@ -408,7 +408,7 @@
     <div class="total-value" id="totalKg">0 <span>kg</span></div>
   </div>
 </div>
- 
+
 <!-- PHOTOS -->
 <div class="section" style="margin-top:16px;">
   <div class="section-label">Photos</div>
@@ -426,9 +426,9 @@
   <input type="file" id="cameraInput" accept="image/*" capture="environment" multiple onchange="handlePhotos(this)">
   <input type="file" id="galleryInput" accept="image/*" multiple onchange="handlePhotos(this)">
 </div>
- 
+
 <button class="btn-reset" onclick="resetForm()">↺ Reset Form</button>
- 
+
 <!-- EXPORT BAR -->
 <div class="export-bar">
   <button class="btn-export" onclick="exportPDF(false)">
@@ -440,12 +440,12 @@
     </svg>
   </button>
 </div>
- 
+
 <script>
 // ── STATE ──────────────────────────────────────────────────────────
 let bales = [{ id: 1, kg: '' }];
 let photos = []; // array of { dataUrl }
- 
+
 // ── INIT ────────────────────────────────────────────────────────────
 function init() {
   const today = new Date();
@@ -455,7 +455,7 @@ function init() {
   document.getElementById('dispatchDate').value = `${y}-${m}-${d}`;
   renderBales();
 }
- 
+
 // ── BALE RENDERING ──────────────────────────────────────────────────
 function renderBales(focusIndex) {
   const list = document.getElementById('baleList');
@@ -464,11 +464,11 @@ function renderBales(focusIndex) {
     const row = document.createElement('div');
     row.className = 'bale-row' + (b.kg !== '' ? ' has-value' : '');
     row.dataset.index = i;
- 
+
     const nr = document.createElement('div');
     nr.className = 'bale-nr';
     nr.textContent = b.id;
- 
+
     const inp = document.createElement('input');
     inp.className = 'bale-input';
     inp.type = 'tel'; // numeric keyboard, no spinner arrows, no dismiss on first digit
@@ -477,7 +477,7 @@ function renderBales(focusIndex) {
     inp.placeholder = '— kg';
     inp.value = b.kg !== '' ? b.kg : '';
     inp.dataset.index = i;
- 
+
     // Update state on every keystroke — NO re-render
     inp.addEventListener('input', function() {
       const val = this.value.replace(/\D/g, '');
@@ -492,28 +492,28 @@ function renderBales(focusIndex) {
         addRowToDOM(bales.length - 1); // append only, no full re-render
       }
     });
- 
+
     // Enter / Next → jump to next input
     inp.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') { e.preventDefault(); focusNext(i); }
     });
- 
+
     inp.addEventListener('focus', function() {
       setTimeout(() => this.scrollIntoView({ behavior: 'smooth', block: 'center' }), 250);
     });
- 
+
     const del = document.createElement('button');
     del.className = 'bale-del';
     del.title = 'Remove';
     del.textContent = '×';
     del.addEventListener('click', () => deleteBale(i));
- 
+
     const next = document.createElement('button');
     next.className = 'bale-next';
     next.title = 'Next bale';
     next.textContent = '→';
     next.addEventListener('click', () => focusNext(i));
- 
+
     row.appendChild(nr);
     row.appendChild(inp);
     row.appendChild(next);
@@ -521,7 +521,7 @@ function renderBales(focusIndex) {
     list.appendChild(row);
   });
   updateTotals();
- 
+
   // Focus requested index
   if (focusIndex !== undefined) {
     const inputs = document.querySelectorAll('.bale-input');
@@ -530,20 +530,20 @@ function renderBales(focusIndex) {
     }
   }
 }
- 
+
 // Append a single new row without touching existing ones
 function addRowToDOM(index) {
   const b = bales[index];
   const list = document.getElementById('baleList');
- 
+
   const row = document.createElement('div');
   row.className = 'bale-row';
   row.dataset.index = index;
- 
+
   const nr = document.createElement('div');
   nr.className = 'bale-nr';
   nr.textContent = b.id;
- 
+
   const inp = document.createElement('input');
   inp.className = 'bale-input';
   inp.type = 'tel';
@@ -551,7 +551,7 @@ function addRowToDOM(index) {
   inp.pattern = '[0-9]*';
   inp.placeholder = '— kg';
   inp.dataset.index = index;
- 
+
   inp.addEventListener('input', function() {
     const val = this.value.replace(/\D/g, '');
     this.value = val;
@@ -564,34 +564,34 @@ function addRowToDOM(index) {
       addRowToDOM(bales.length - 1);
     }
   });
- 
+
   inp.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') { e.preventDefault(); focusNext(index); }
   });
- 
+
   inp.addEventListener('focus', function() {
     setTimeout(() => this.scrollIntoView({ behavior: 'smooth', block: 'center' }), 250);
   });
- 
+
   const del = document.createElement('button');
   del.className = 'bale-del';
   del.title = 'Remove';
   del.textContent = '×';
   del.addEventListener('click', () => deleteBale(index));
- 
+
   const nextBtn = document.createElement('button');
   nextBtn.className = 'bale-next';
   nextBtn.title = 'Next bale';
   nextBtn.textContent = '→';
   nextBtn.addEventListener('click', () => focusNext(index));
- 
+
   row.appendChild(nr);
   row.appendChild(inp);
   row.appendChild(nextBtn);
   row.appendChild(del);
   list.appendChild(row);
 }
- 
+
 function focusNext(currentIndex) {
   const inputs = document.querySelectorAll('.bale-input');
   const next = inputs[currentIndex + 1];
@@ -600,18 +600,18 @@ function focusNext(currentIndex) {
     next.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
- 
+
 function deleteBale(index) {
   if (bales.length === 1) { bales[0].kg = ''; renderBales(); return; }
   bales.splice(index, 1);
   bales.forEach((b, i) => b.id = i + 1);
   renderBales();
 }
- 
+
 function autoAddRow() {
   // No-op: rows are now added dynamically in the input listener
 }
- 
+
 function updateTotals() {
   const filled = bales.filter(b => b.kg !== '' && b.kg !== undefined && !isNaN(b.kg));
   const total = filled.reduce((s, b) => s + parseInt(b.kg), 0);
@@ -620,22 +620,81 @@ function updateTotals() {
   document.getElementById('totalKg').innerHTML = `${total.toLocaleString()} <span>kg</span>`;
   document.getElementById('headerBaleCount').textContent = `${count} bale${count !== 1 ? 's' : ''}`;
 }
- 
+
 // ── PHOTOS ──────────────────────────────────────────────────────────
+
+// Read EXIF orientation tag from raw ArrayBuffer
+function getExifOrientation(buffer) {
+  const view = new DataView(buffer);
+  if (view.getUint16(0, false) !== 0xFFD8) return 1; // not JPEG
+  let offset = 2;
+  while (offset < view.byteLength) {
+    const marker = view.getUint16(offset, false);
+    offset += 2;
+    if (marker === 0xFFE1) { // APP1
+      if (view.getUint32(offset + 2, false) !== 0x45786966) return 1; // no Exif
+      const little = view.getUint16(offset + 10, false) === 0x4949;
+      const ifdOffset = view.getUint32(offset + 14, little);
+      const entries = view.getUint16(offset + 10 + ifdOffset, little);
+      for (let i = 0; i < entries; i++) {
+        const tag = view.getUint16(offset + 10 + ifdOffset + 2 + i * 12, little);
+        if (tag === 0x0112) {
+          return view.getUint16(offset + 10 + ifdOffset + 2 + i * 12 + 8, little);
+        }
+      }
+    } else if ((marker & 0xFF00) !== 0xFF00) break;
+    else offset += view.getUint16(offset, false);
+  }
+  return 1;
+}
+
+// Draw image onto canvas respecting EXIF orientation, return corrected dataUrl
+function fixOrientation(file) {
+  return new Promise(res => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const buf = e.target.result;
+      const orientation = getExifOrientation(buf);
+      const blob = new Blob([buf]);
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => {
+        const { naturalWidth: w, naturalHeight: h } = img;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        // Swap dimensions for 90/270 rotations
+        if ([5,6,7,8].includes(orientation)) { canvas.width = h; canvas.height = w; }
+        else { canvas.width = w; canvas.height = h; }
+        // Apply transform
+        switch (orientation) {
+          case 2: ctx.transform(-1,0,0,1,w,0); break;
+          case 3: ctx.transform(-1,0,0,-1,w,h); break;
+          case 4: ctx.transform(1,0,0,-1,0,h); break;
+          case 5: ctx.transform(0,1,1,0,0,0); break;
+          case 6: ctx.transform(0,1,-1,0,h,0); break;
+          case 7: ctx.transform(0,-1,-1,0,h,w); break;
+          case 8: ctx.transform(0,-1,1,0,0,w); break;
+          default: break;
+        }
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        res(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.src = url;
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
 function handlePhotos(input) {
   const files = Array.from(input.files);
-  const promises = files.map(f => new Promise(res => {
-    const r = new FileReader();
-    r.onload = e => res(e.target.result);
-    r.readAsDataURL(f);
-  }));
-  Promise.all(promises).then(results => {
+  Promise.all(files.map(f => fixOrientation(f))).then(results => {
     results.forEach(url => photos.push({ dataUrl: url }));
     renderPhotos();
     input.value = '';
   });
 }
- 
+
 function renderPhotos() {
   const grid = document.getElementById('photoGrid');
   grid.innerHTML = '';
@@ -646,12 +705,12 @@ function renderPhotos() {
     grid.appendChild(div);
   });
 }
- 
+
 function deletePhoto(i) {
   photos.splice(i, 1);
   renderPhotos();
 }
- 
+
 // ── RESET ────────────────────────────────────────────────────────────
 function resetForm() {
   if (!confirm('Reset all bale weights and photos?')) return;
@@ -660,19 +719,19 @@ function resetForm() {
   renderBales();
   renderPhotos();
 }
- 
+
 // ── PDF EXPORT ───────────────────────────────────────────────────────
 async function exportPDF(shareWsp) {
   const filledBales = bales.filter(b => b.kg !== '' && b.kg !== undefined && !isNaN(b.kg));
   if (filledBales.length === 0) { alert('Please enter at least one bale weight.'); return; }
- 
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const W = 210, H = 297;
   const ml = 15, mr = 15;
   const usableW = W - ml - mr;
   let y = 15;
- 
+
   // ── FONTS / COLORS
   const navy = [15, 25, 35];
   const accent = [232, 184, 75];
@@ -680,7 +739,7 @@ async function exportPDF(shareWsp) {
   const muted = [122, 138, 154];
   const light = [244, 247, 250];
   const lightBlue = [240, 244, 251];
- 
+
   // ── TITLE BAR
   doc.setFillColor(...navy);
   doc.rect(0, 0, W, 22, 'F');
@@ -695,7 +754,7 @@ async function exportPDF(shareWsp) {
   doc.setTextColor(...accent);
   doc.text('Smart Environmental Limited', W / 2, 19.5, { align: 'center' });
   y = 28;
- 
+
   // ── INFO BLOCK
   const dateVal = document.getElementById('dispatchDate').value;
   const [dy, dm, dd] = dateVal.split('-');
@@ -704,12 +763,12 @@ async function exportPDF(shareWsp) {
   const baleType = document.getElementById('baleType').value;
   const location = document.getElementById('location').value || 'Cromwell';
   const total = filledBales.reduce((s, b) => s + parseInt(b.kg), 0);
- 
+
   const fields = [
     ['Date', dateStr, 'Bale Type', baleType],
     ['Location', location, 'Total Bales', String(filledBales.length)],
   ];
- 
+
   const col = usableW / 4;
   fields.forEach((row, ri) => {
     const rowY = y + ri * 10;
@@ -728,7 +787,7 @@ async function exportPDF(shareWsp) {
     });
   });
   y += fields.length * 10 + 4;
- 
+
   // ── NOTE BOX
   doc.setFillColor(255, 248, 230);
   doc.setDrawColor(240, 196, 64);
@@ -738,14 +797,14 @@ async function exportPDF(shareWsp) {
   doc.setTextColor(122, 98, 0);
   doc.text('Note: Each bale was individually weighed using the on-site scale. Weights are approximate and may not be exact.', ml + 3, y + 5);
   y += 12;
- 
+
   // ── BALE TABLE (2 columns)
   const half = Math.ceil(filledBales.length / 2);
   const leftCol = filledBales.slice(0, half);
   const rightCol = filledBales.slice(half);
   const colW = usableW / 2 - 2;
   const rowH = 7.5;
- 
+
   // Header
   [[ml, 'Bale Nr.', 'Weight (kg)'], [ml + colW + 4, 'Bale Nr.', 'Weight (kg)']].forEach(([x, l1, l2]) => {
     doc.setFillColor(...navy);
@@ -757,22 +816,22 @@ async function exportPDF(shareWsp) {
     doc.text(l2, x + colW - 4, y + 5, { align: 'right' });
   });
   y += rowH;
- 
+
   const maxRows = Math.max(leftCol.length, rightCol.length);
   for (let i = 0; i < maxRows; i++) {
     const bg = i % 2 === 0 ? white : lightBlue;
     doc.setFillColor(...bg);
     doc.rect(ml, y, colW, rowH, 'F');
     doc.rect(ml + colW + 4, y, colW, rowH, 'F');
- 
+
     doc.setDrawColor(221, 228, 237);
     doc.rect(ml, y, colW, rowH, 'S');
     doc.rect(ml + colW + 4, y, colW, rowH, 'S');
- 
+
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...navy);
- 
+
     if (leftCol[i]) {
       doc.text(String(leftCol[i].id), ml + 4, y + 5);
       doc.text(String(leftCol[i].kg), ml + colW - 4, y + 5, { align: 'right' });
@@ -783,7 +842,7 @@ async function exportPDF(shareWsp) {
     }
     y += rowH;
   }
- 
+
   // Total row
   doc.setFillColor(...navy);
   doc.rect(ml, y, usableW, rowH, 'F');
@@ -793,7 +852,7 @@ async function exportPDF(shareWsp) {
   doc.text('TOTAL', ml + usableW / 2 - 15, y + 5);
   doc.text(`${total.toLocaleString()} kg`, ml + usableW - 0, y + 5, { align: 'right' });
   y += rowH + 6;
- 
+
   // ── PHOTOS
   if (photos.length > 0) {
     const remainingH = H - y - 15;
@@ -802,26 +861,25 @@ async function exportPDF(shareWsp) {
     const gap = 3;
     const imgW = (usableW - (cols - 1) * gap) / cols;
     const imgH = Math.min(remainingH / rows - gap, imgW * 0.65);
- 
+
     if (y + rows * (imgH + gap) > H - 15) {
       // Reduce imgH to fit
     }
- 
+
     for (let pi = 0; pi < photos.length; pi++) {
       const col = pi % cols;
       const row = Math.floor(pi / cols);
       const px = ml + col * (imgW + gap);
       const py = y + row * (imgH + gap);
       try {
-        const fmt = photos[pi].dataUrl.includes('image/png') ? 'PNG' : 'JPEG';
-        doc.addImage(photos[pi].dataUrl, fmt, px, py, imgW, imgH, undefined, 'MEDIUM');
+        doc.addImage(photos[pi].dataUrl, 'JPEG', px, py, imgW, imgH, undefined, 'MEDIUM');
       } catch(e) { console.warn('Image error', e); }
     }
   }
- 
+
   // ── FILENAME
   const filename = `Dispatch_${dateStr.replace(/ /g,'_')}.pdf`;
- 
+
   if (shareWsp) {
     const blob = doc.output('blob');
     const file = new File([blob], filename, { type: 'application/pdf' });
@@ -838,7 +896,7 @@ async function exportPDF(shareWsp) {
     doc.save(filename);
   }
 }
- 
+
 init();
 </script>
 </body>
